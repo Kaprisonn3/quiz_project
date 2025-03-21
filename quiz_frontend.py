@@ -18,6 +18,11 @@ class Answer():
     def get(self):
         return self.answer
 
+class Player():
+    def __init__(self):
+        self.score = 0
+    def set
+
 # sets global variable for the memocard index and refreshes the general view
 def handle_next_question(index: Index):
     index.increment()

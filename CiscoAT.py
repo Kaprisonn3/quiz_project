@@ -2,16 +2,14 @@ import csv
 from random import shuffle
 
 class Memocard:
-    def __init__(self, id, question, answer, wrong0=None, wrong1=None, wrong2=None):
+    def __init__(self, id: int, question: str, correct_answer: str, incorrect_answers=[], picture=None) -> None:
         self.id = id
         self.question = question
-        self.answer = answer
-        self.wrong0 = wrong0
-        self.wrong1 = wrong1
-        self.wrong2 = wrong2
-        self.answer_list = [self.answer, self.wrong0, self.wrong1, self.wrong2]
-
-    # randomize answer list here:
+        self.correct_answer = correct_answer
+        self.incorrect_answers = incorrect_answers
+        self.picture = picture
+        # answer_list is a randomized list of possible answers
+        self.answer_list = [self.correct_answer] + self.incorrect_answers
         shuffle(self.answer_list)
 
     # returns list of possible answers.
@@ -24,10 +22,10 @@ class Memocard:
     # TODO: check if user_inputted answer is correct answer
     # returns true if user_answer == answer
     def is_correct_answer(self, answer):
-        return answer == self.answer
+        return answer == self.correct_answer
 
     def __str__(self):
-        return f"{self.question}\n1: {self.answer}\n2: {self.wrong0}\n3: {self.wrong1}\n4: {self.wrong2}\nid: {self.id}"
+        return f"{self.question}\n1: {self.correct_answer}\n2: {self.wrong0}\n3: {self.wrong1}\n4: {self.wrong2}\nid: {self.id}"
 
 # takes a csv file with a question on each line and possible answers seperated by comma, the first possible answer has to be the correct one
 # parameter csv_file = "input_questions_and_answers_cisco.csv", if nothing else is specified.
@@ -62,27 +60,17 @@ def input_answer(max_answers) -> int:
     return answer
 
 def play_game_test(memocards) -> None:
-
     shuffle(memocards)
 
     for memocard in memocards:
         #TODO: shuffle the questions and make sure that the answer is not always located as first option
         print(memocard.question)
-
         possible_answers = memocard.get_random_answer_list()
-
         for i, answer in enumerate(possible_answers):
-
             print(f"{i+1}: {answer}")
-
         answer = input_answer(len(memocard.possible_answers()))
-
         answer_list = memocard.get_answer_list()
-
         if memocard.is_correct_answer(answer_list[answer-1]):
-
             print("Answer is correct!")
-
         else:
-
             print("Answer is incorrect!")

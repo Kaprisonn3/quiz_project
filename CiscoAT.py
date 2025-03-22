@@ -16,9 +16,6 @@ class Memocard:
     # TODO: if only one possible answer, is memocard not question
     def get_answer_list(self):
         return self.answer_list
-
-    def possible_answers(self):
-        return [answer for answer in self.answer_list if answer != None]
     # TODO: check if user_inputted answer is correct answer
     # returns true if user_answer == answer
     def is_correct_answer(self, answer):
@@ -31,16 +28,19 @@ class Memocard:
 # parameter csv_file = "input_questions_and_answers_cisco.csv", if nothing else is specified.
 # returns a list of Memocard objects each with a unique ID
 def generate_cards(csv_file="input_questions_and_answers_cisco.csv") -> list[Memocard]:
-    memocards = [] # init list for storing all memocards read from .csv file
+    memocards = []  # init list for storing all memocards read from .csv file
     id = 0
     with open(csv_file, newline='') as questions_and_answers:
         memocard_generator = csv.reader(questions_and_answers)
         for row in memocard_generator:
-            #TODO: change class memocard and this function to take unlimited amount of possible answers:
-            # could be done quiite easily with the correct answer as a variable for it self, and then a list of wrong answers that is as long
-            # as the rest of the line in the .csv file
-            memocards.append(Memocard(id, row[0],row[1],row[2],row[3],row[4]))
-            id = id + 1
+            question = row[0]
+            correct_answer = row[1]
+            # All entries between the correct answer and the last entry are incorrect answers
+            incorrect_answers = row[2:-1]
+            # Check if the last entry is a picture or asetrisk '*' which indicates no picture.
+            picture = None if row[-1] == '*' else row[-1]
+            memocards.append(Memocard(id, question, correct_answer, incorrect_answers, picture))
+            id += 1
     return memocards
 
 # range is the length of the list with possible answers. ie. if 3 possible answers range is 3
@@ -65,10 +65,10 @@ def play_game_test(memocards) -> None:
     for memocard in memocards:
         #TODO: shuffle the questions and make sure that the answer is not always located as first option
         print(memocard.question)
-        possible_answers = memocard.get_random_answer_list()
+        possible_answers = memocard.get_answer_list()
         for i, answer in enumerate(possible_answers):
             print(f"{i+1}: {answer}")
-        answer = input_answer(len(memocard.possible_answers()))
+        answer = input_answer(len(possible_answers))
         answer_list = memocard.get_answer_list()
         if memocard.is_correct_answer(answer_list[answer-1]):
             print("Answer is correct!")
@@ -78,4 +78,3 @@ def play_game_test(memocards) -> None:
 if __name__ == "__main__":
     memocards = generate_cards()
     play_game_test(memocards)
-    

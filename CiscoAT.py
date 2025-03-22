@@ -74,3 +74,8 @@ def play_game_test(memocards) -> None:
             print("Answer is correct!")
         else:
             print("Answer is incorrect!")
+            
+if __name__ == "__main__":
+    memocards = generate_cards()
+    play_game_test(memocards)
+    

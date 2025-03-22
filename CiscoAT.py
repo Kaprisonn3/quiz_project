@@ -11,18 +11,16 @@ class Memocard:
         # answer_list is a randomized list of possible answers
         self.answer_list = [self.correct_answer] + self.incorrect_answers
         shuffle(self.answer_list)
-
     # returns list of possible answers.
-    # TODO: if only one possible answer, is memocard not question
+    # if no incorrect answers are given, (i.e. it is an actuual memocard) this returns a list with only the correct answer.
     def get_answer_list(self):
         return self.answer_list
-    # TODO: check if user_inputted answer is correct answer
     # returns true if user_answer == answer
     def is_correct_answer(self, answer):
         return answer == self.correct_answer
-
     def __str__(self):
-        return f"{self.question}\n1: {self.correct_answer}\n2: {self.wrong0}\n3: {self.wrong1}\n4: {self.wrong2}\nid: {self.id}"
+        answers = "\n".join([f"{i+1}: {answer}" for i, answer in enumerate(self.answer_list)])
+        return f"Question: {self.question}\n{answers}\nid: {self.id}"
 
 # takes a csv file with a question on each line and possible answers seperated by comma, the first possible answer has to be the correct one
 # parameter csv_file = "input_questions_and_answers_cisco.csv", if nothing else is specified.
@@ -42,6 +40,12 @@ def generate_cards(csv_file="input_questions_and_answers_cisco.csv") -> list[Mem
             memocards.append(Memocard(id, question, correct_answer, incorrect_answers, picture))
             id += 1
     return memocards
+
+
+
+
+################## FOLLOWING FUNCTIONS ARE FOR TESTING PURPOSES AND SHOULD BE REMOVED (or commented out;)) WHEN IMPLEMENTED IN FRONTEND ###################
+
 
 # range is the length of the list with possible answers. ie. if 3 possible answers range is 3
 # returns an int in rangge(0,max_answers)

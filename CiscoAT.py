@@ -41,9 +41,6 @@ def generate_cards(csv_file="input_questions_and_answers_cisco.csv") -> list[Mem
             id += 1
     return memocards
 
-
-
-
 ################## FOLLOWING FUNCTIONS ARE FOR TESTING PURPOSES AND SHOULD BE REMOVED (or commented out;)) WHEN IMPLEMENTED IN FRONTEND ###################
 
 
@@ -78,7 +75,4 @@ def play_game_test(memocards) -> None:
             print("Answer is correct!")
         else:
             print("Answer is incorrect!")
-            
-if __name__ == "__main__":
-    memocards = generate_cards()
-    play_game_test(memocards)
+

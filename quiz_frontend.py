@@ -42,6 +42,7 @@ def handle_next_question(index: Index, memocard: quiz_backend.Memocard, chosen_a
         index.reset_index()
         general_view.refresh()
     else:
+        print(f"{chosen_answer.get()} == {memocard.correct_answer}")
         if memocard.is_correct_answer(chosen_answer.get()):
             player.increment()
             ui.notify("Correct!", color="green")
@@ -52,10 +53,10 @@ def handle_next_question(index: Index, memocard: quiz_backend.Memocard, chosen_a
 
 #TODO: implement what to do if question has picture
 @ui.refreshable
-def general_view(memocards: list[quiz_backend.Memocard], chosen_answer: Answer, index: Index, player: Player):
+def general_view(memocards: list[quiz_backend.Memocard], chosen_answer: Answer, index: Index, player: Player) -> None:
     memocard = memocards[index.get_index()]
     with ui.row().style("border: 2px solid black; padding: 10px; margin: 10px;"):
-        
+
         # question, answers and picture:
         with ui.column().style("flex: 2; padding: 10px;"):
             if memocard.get_is_last():
@@ -67,18 +68,29 @@ def general_view(memocards: list[quiz_backend.Memocard], chosen_answer: Answer, 
                 ui.label(memocard.question).style("font-size: 18px; font-weight: bold; margin-bottom: 10px;")
                 answer_list = memocard.get_answer_list()
                 radio = ui.radio(answer_list, value=answer_list[0], on_change=lambda: chosen_answer.set(radio.value))
+                chosen_answer.set(radio.value) # ensures that chosen answer is set even though radio is not changed
                 ui.button("Next Question", on_click=lambda: handle_next_question(index, memocard, chosen_answer, player))
         
         # Scoreboard
         with ui.card().style("background-color: lightgrey; color: white; font-family: Courier;"):
-            ui.label(f"Score: {player.get_score()}")
-            ui.label(f"Questions Answered: {index.get_index()}/{len(memocards)}")
-            ui.label(f"Total Questions: {len(memocards)}")
+            ui.label(f"Score: {player.get_score()}").style(LABEL_STYLE)
+            ui.label(f"Questions Answered: {index.get_index()}/{len(memocards)-1}")
+            ui.label(f"Total Questions: {len(memocards)-1}")
 
-# TODO: handle what happens when the game is over, and the list of memocards is empty
-player = Player()
-chosen_answer = Answer()
-memocards = quiz_backend.generate_cards()
-index = Index()
-general_view(memocards, chosen_answer, index, player)
-ui.run(reload=True, native=True)
+# Define a reusable style for labels
+LABEL_STYLE = "background-color: lightgrey; color: white; font-family: Courier;"
+
+def main() -> None:
+    player = Player()
+    chosen_answer = Answer()
+    try:
+        memocards = quiz_backend.generate_cards()
+    except (FileNotFoundError, ValueError) as e:
+        ui.notify(f"Error loading quiz data: {e}", color="red")
+        memocards = []
+    index = Index()
+    general_view(memocards, chosen_answer, index, player)
+    ui.run()
+
+
+main()

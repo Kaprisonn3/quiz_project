@@ -6,6 +6,8 @@ class Index():
         self.val = val
     def increment(self):
         self.val = self.val + 1
+    def reset_index(self):
+        self.val = 0
     def get_index(self):
         return self.val
 
@@ -28,34 +30,37 @@ class Player():
         self.score = 0
 
 # sets global variable for the memocard index and refreshes the general view
-def handle_next_question(index: Index, memocards: list[quiz_backend.Memocard], chosen_answer: Answer, player: Player):
-    memocard = memocards[index.get_index()]
-    if memocard.is_correct_answer(chosen_answer.get()):
-        player.increment()
-        ui.notify("Correct!", color="green")
+def handle_next_question(index: Index, memocard: quiz_backend.Memocard, chosen_answer: Answer | None, player: Player) -> None:
+    if memocard.is_last: 
+        player.reset_score()
+        index.reset_index()
+        general_view.refresh()
     else:
-        ui.notify("Incorrect!", color="red")
-    index.increment()
-    general_view.refresh()
+        if memocard.is_correct_answer(chosen_answer.get()):
+            player.increment()
+            ui.notify("Correct!", color="green")
+        else:
+            ui.notify("Incorrect!", color="red")
+        index.increment()
+        general_view.refresh()
 
 #TODO: implement what to do if question has picture
 @ui.refreshable
 def general_view(memocards: list[quiz_backend.Memocard], chosen_answer: Answer, index: Index, player: Player):
     memocard = memocards[index.get_index()]
-    with ui.row():
+    with ui.row().style("border: 2px solid black; padding: 10px; margin: 10px;"):
         # Question and answers
-        with ui.column():
+        with ui.column().style("flex: 2; padding: 10px;"):
             if memocard.get_is_last():
-                ui.image(memocard.picture)#.props("height= 400 px") #picture veeeeeeery smalll - 
-                ui.label("Game Over!")
-                ui.button("Play Again", on_click=lambda: player.reset_score()) #implement reset score and play again in handle_next_question
+                ui.image(memocard.picture).style("width: 629px; height: 252px; object-fit: scale-down;")
+                ui.button("Play Again", on_click=lambda: handle_next_question(index,memocard,None,player)) #implement reset score and play again in handle_next_question
             else:
                 if memocard.has_picture:
-                    ui.image(memocard.picture)
-                ui.label(memocard.question)
+                    ui.image(memocard.picture).style("width: 550px; height: 400px; object-fit: scale-down;")
+                ui.label(memocard.question).style("font-size: 18px; font-weight: bold; margin-bottom: 10px;")
                 answer_list = memocard.get_answer_list()
                 radio = ui.radio(answer_list, value=answer_list[0], on_change=lambda: chosen_answer.set(radio.value))
-                ui.button("Next Question", on_click=lambda: handle_next_question(index, memocards, chosen_answer, player))
+                ui.button("Next Question", on_click=lambda: handle_next_question(index, memocard, chosen_answer, player))
         
         # Scoreboard
         #TODO create a function that checks if memocard contains picture and displays it if True
@@ -70,5 +75,4 @@ chosen_answer = Answer()
 memocards = quiz_backend.generate_cards()
 index = Index()
 general_view(memocards, chosen_answer, index, player)
-
 ui.run(reload=True, native=True)

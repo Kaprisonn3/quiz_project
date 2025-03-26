@@ -34,7 +34,7 @@ def generate_cards(csv_file="input_questions_and_answers_cisco.csv") -> list[Mem
     with open(csv_file, newline='', encoding='utf-8') as questions_and_answers:
         memocard_generator = csv.reader(questions_and_answers)
         for id, row in enumerate(memocard_generator):
-            if len(row) >= 2:  # Ensure at least a question and a correct answer exist
+            if len(row) >= 3:  # Ensure that input line has question field, at least one answer field and a picture field.
                 question = row[0].strip()
                 correct_answer = row[1].strip()
                 incorrect_answers = [ans.strip() for ans in row[2:-1]]
@@ -43,37 +43,3 @@ def generate_cards(csv_file="input_questions_and_answers_cisco.csv") -> list[Mem
     # Adding last question to handle end of quiz and out-of-bounds errors
     memocards.append(Memocard(-1,"LAST QUESTION TEXT", "", picture="quiz_done.jpg", is_last=True))
     return memocards 
-
-################## FOLLOWING FUNCTIONS ARE FOR TESTING PURPOSES AND SHOULD BE REMOVED (or commented out;)) WHEN IMPLEMENTED IN FRONTEND ###################
-
-# range is the length of the list with possible answers. ie. if 3 possible answers range is 3
-# returns an int in rangge(0,max_answers)
-# def input_answer(max_answers) -> int:
-#     while True:
-#         try:
-#             answer_string = input("What is your answer:")
-#             answer = int(answer_string)
-#         except ValueError:
-#             print(f"Please enter an integer from 1 to {max_answers}")
-#             continue
-#         if answer < 0 or answer > max_answers:
-#             print(f"Please enter an integer from 1 to {max_answers}")
-#             continue
-#         break
-#     return answer
-
-# def play_game_test(memocards) -> None:
-#     shuffle(memocards)
-
-#     for memocard in memocards:
-#         #TODO: shuffle the questions and make sure that the answer is not always located as first option
-#         print(memocard.question)
-#         possible_answers = memocard.get_answer_list()
-#         for i, answer in enumerate(possible_answers):
-#             print(f"{i+1}: {answer}")
-#         answer = input_answer(len(possible_answers))
-#         answer_list = memocard.get_answer_list()
-#         if memocard.is_correct_answer(answer_list[answer-1]):
-#             print("Answer is correct!")
-#         else:
-#             print("Answer is incorrect!")

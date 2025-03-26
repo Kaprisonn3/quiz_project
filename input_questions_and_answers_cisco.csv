@@ -1,5 +1,5 @@
-How many meters can a UTP cable be?,20 m,15 m,10 m,666 m,*
-Who am I?,Kasper,Martin,Rolf,Amalie,*
-Hvem elsker Astrid?,mig,mig,mig,mig,*
-Det er rigtigt?,ja,ja,nej,ja,*
-Hvad er 2+2?,4,5,*
+Refer to the exhibit. Which type of route does R1 use to reach host 10.10.13.10/32??,network route,default route,host route,floating static route,0000200001.png
+"During a routine inspection, a technician discovered that software that was installed on a computer was secretly collecting data about websites that were visited by users of the computer. Which type of threat is affecting this computer?","DoS attack","identity theft","spyware","zero-day attack",*
+How is SSH different from Telnet?,"SSH makes connections over the network, whereas Telnet is for out-of-band access.","SSH provides security to remote sessions by encrypting messages and using user authentication. Telnet is considered insecure and sends messages in plaintext.",SSH requires the use of the PuTTY terminal emulation program. Tera Term must be used to connect to devices through the use of Telnet.,"SSH must be configured over an active network connection, whereas Telnet is used to connect to a device from a console connection.",*
+What is the air-speed velocity of an unlaiden swallow?,1,2,3,4,*
+Ding Dong?,Bong,Bang,Bing,Bung,*
